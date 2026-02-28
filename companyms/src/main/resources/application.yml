@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: company-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/companydb?currentSchema=public
+    username: postgres
+    password: lenin
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: never
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Kolkata
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  jackson:
+    time-zone: Asia/Kolkata
+
+server:
+  port: 8081
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
