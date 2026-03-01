@@ -1,4 +1,4 @@
-package com.companyms.company;
+package com.companyms.company.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,11 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyVO {
+public class ReviewVO {
 
     private UUID id;
-    private String name;
+    private String title;
     private String description;
-    private Double rating;
-
+    private double rating;
+    private UUID companyId;
 }

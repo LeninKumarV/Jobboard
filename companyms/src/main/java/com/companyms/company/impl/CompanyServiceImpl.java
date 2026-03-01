@@ -4,10 +4,13 @@ import com.companyms.company.Company;
 import com.companyms.company.CompanyRepository;
 import com.companyms.company.CompanyService;
 import com.companyms.company.CompanyVO;
+import com.companyms.company.clients.ReviewClient;
+import com.companyms.company.config.ReviewVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final ReviewClient reviewClient;
 
     @Override
     public List<CompanyVO> getAllCompanies() {
@@ -68,6 +72,17 @@ public class CompanyServiceImpl implements CompanyService {
                 .orElse(null);
     }
 
+    @Override
+    public void updateCompanyReview(ReviewVO reviewVO) {
+        Optional<Company> company = companyRepository.findById(reviewVO.getCompanyId());
+        if (company.isPresent()) {
+            Company existingCompany = company.get();
+            Double rating = reviewClient.getReviews(reviewVO.getCompanyId());
+            existingCompany.setRating(rating);
+            companyRepository.save(existingCompany);
+        }
+    }
+
 
     private CompanyVO convertToVO(Company company) {
 
@@ -77,6 +92,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .id(company.getId())
                 .name(company.getName())
                 .description(company.getDescription())
+                .rating(Objects.requireNonNullElse(company.getRating(), 0.0))
                 .build();
     }
 

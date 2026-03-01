@@ -1,5 +1,6 @@
 package com.reviewms.review;
 
+import com.reviewms.review.config.ReviewMessageProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import java.util.UUID;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final ReviewMessageProducer reviewMessageProducer;
+    private final ReviewRepository reviewRepository;
 
     @GetMapping("/get/review")
     public ResponseEntity<List<ReviewVO>> getAllReviews(@RequestParam UUID companyId) {
@@ -29,8 +32,12 @@ public class ReviewController {
 
         boolean isSaved = reviewService.addReview(companyId, reviewVO);
 
-        if (isSaved)
+        if (isSaved){
+            reviewVO.setCompanyId(companyId);
+            reviewMessageProducer.sendMessage(reviewVO);
+
             return new ResponseEntity<>("Review Added Successfully", HttpStatus.CREATED);
+        }
 
         return new ResponseEntity<>("Review Not Saved", HttpStatus.BAD_REQUEST);
     }
@@ -67,5 +74,17 @@ public class ReviewController {
             return new ResponseEntity<>("Review deleted successfully", HttpStatus.OK);
 
         return new ResponseEntity<>("Review not found", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/average/{companyId}")
+    public ResponseEntity<Double> getAverageReview(@PathVariable UUID companyId) {
+        List<Review> review = reviewRepository.findByCompanyId(companyId);
+
+        double average = review.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        return new ResponseEntity<>(average, HttpStatus.OK);
     }
 }

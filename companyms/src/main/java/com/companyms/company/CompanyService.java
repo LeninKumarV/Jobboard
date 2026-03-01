@@ -1,5 +1,7 @@
 package com.companyms.company;
 
+import com.companyms.company.config.ReviewVO;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -9,4 +11,5 @@ public interface CompanyService {
     void createCompany(CompanyVO company);
     boolean deleteCompanyById(UUID id);
     CompanyVO getCompanyById(UUID id);
+    void updateCompanyReview(ReviewVO reviewVO);
 }
