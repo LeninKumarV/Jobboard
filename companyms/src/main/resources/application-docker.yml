@@ -1,16 +1,16 @@
 review-service:
-  url: http://localhost:8083
+  url: http://review-service:8083
 job-service:
-  url: http://localhost:8082
+  url: http://job-service:8082
 company-service:
-  url: http://localhost:8081
+  url: http://company-service:8081
 
 spring:
   application:
-    name: review-service
+    name: company-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/reviewdb?currentSchema=public
+    url: jdbc:postgresql://postgres:5432/companydb?currentSchema=public
     username: postgres
     password: lenin
     driver-class-name: org.postgresql.Driver
@@ -30,18 +30,17 @@ spring:
     time-zone: Asia/Kolkata
 
   rabbitmq:
-    host: localhost
+    host: rabbitmq_jobboard
     port: 5672
     username: guest
     password: guest
-    dynamic: true
 
 server:
-  port: 8083
+  port: 8081
 
 eureka:
   instance:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
